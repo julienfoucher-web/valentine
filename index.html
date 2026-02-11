@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Google Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      text-align: center;
+      margin-top: 100px;
+    }
+    .logo {
+      font-size: 64px;
+      font-weight: bold;
+    }
+    .logo span:nth-child(1) { color: #4285F4; }
+    .logo span:nth-child(2) { color: #DB4437; }
+    .logo span:nth-child(3) { color: #F4B400; }
+    .logo span:nth-child(4) { color: #4285F4; }
+    .logo span:nth-child(5) { color: #0F9D58; }
+    .logo span:nth-child(6) { color: #DB4437; }
+
+    input {
+      width: 60%;
+      padding: 12px;
+      font-size: 18px;
+      margin-top: 30px;
+    }
+
+    button {
+      margin: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 40px;
+      font-size: 22px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+  </div>
+
+  <input type="text" placeholder="Search Google or type a URL" id="search" />
+  <br>
+  <button onclick="search()">Google Search</button>
+
+  <div class="result hidden" id="result"></div>
+
+  <div class="hidden" id="question">
+    <p>Will you be my Valentine, <strong>Élodie</strong> ? 💘</p>
+    <button onclick="yes()">YES 💖</button>
+    <button id="no" onmouseover="moveNo()">NO 😏</button>
+  </div>
+
+  <script>
+    function search() {
+      const text = document.getElementById("search").value;
+      const result = document.getElementById("result");
+      result.classList.remove("hidden");
+
+      result.innerHTML = `
+        <p>🔍 Résultats pour : <strong>${text}</strong></p>
+        <p>• Tu es officiellement trop mignonne</p>
+        <p>• Source fiable : mon cœur</p>
+        <p>• Probabilité que je pense à toi : 100%</p>
+      `;
+
+      setTimeout(() => {
+        document.getElementById("question").classList.remove("hidden");
+      }, 2000);
+    }
+
+    function moveNo() {
+      const btn = document.getElementById("no");
+      btn.style.position = "absolute";
+      btn.style.left = Math.random() * 80 + "%";
+      btn.style.top = Math.random() * 80 + "%";
+    }
+
+    function yes() {
+      document.body.innerHTML = `
+        <h1>💖 Bonne réponse 💖</h1>
+        <p>Tu viens officiellement de rendre quelqu’un très heureux.</p>
+        <p>Prépare-toi à une Saint-Valentin incroyable 😌</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
