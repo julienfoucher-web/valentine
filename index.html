@@ -2,190 +2,184 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Google Search</title>
+<title>Valentine Surprise</title>
 
 <style>
 body {
+  margin:0;
   font-family: Arial, sans-serif;
-  text-align: center;
-  margin-top: 100px;
-  background: white;
+  text-align:center;
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+  background-size: 400% 400%;
+  animation: gradient 12s ease infinite;
+  color:white;
 }
 
-.logo {
-  font-size: 60px;
-  font-weight: bold;
+@keyframes gradient {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
-.logo span:nth-child(1){color:#4285F4;}
-.logo span:nth-child(2){color:#DB4437;}
-.logo span:nth-child(3){color:#F4B400;}
-.logo span:nth-child(4){color:#4285F4;}
-.logo span:nth-child(5){color:#0F9D58;}
-.logo span:nth-child(6){color:#DB4437;}
-
-input {
-  width:60%;
-  padding:12px;
-  font-size:18px;
-  margin-top:30px;
+.question {
+  margin-top:120px;
+  font-size:24px;
 }
 
 button {
   margin:10px;
-  padding:10px 20px;
-  font-size:16px;
+  padding:12px 25px;
+  font-size:18px;
+  border:none;
+  border-radius:25px;
   cursor:pointer;
+  transition:0.3s;
 }
 
-.hidden { display:none; }
-
-.question {
-  margin-top:40px;
-  font-size:22px;
+button:hover {
+  transform:scale(1.1);
 }
 
-.fade {
-  animation: fadein 1s;
+.hidden{display:none;}
+
+h1{
+  font-size:50px;
+  animation: pop 1s ease;
 }
 
-@keyframes fadein {
-  from {opacity:0;}
-  to {opacity:1;}
+@keyframes pop{
+  0%{transform:scale(0);}
+  100%{transform:scale(1);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="logo">
-<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+<div id="content" class="question">
+Chargement de l’analyse romantique...
 </div>
 
-<input type="text" placeholder="Search Google or type a URL" id="search">
-<br>
-<button onclick="start()">Google Search</button>
-
-<div id="content"></div>
+<audio id="music" src="music.mp3"></audio>
 
 <script>
-
 let step = 0;
 
-function start(){
-  document.getElementById("content").innerHTML = `
-  <div class="question fade">
-  🔍 Analyse en cours...
-  <br><br>
-  Résultat trouvé :
-  <br>
-  Élodie = officiellement trop incroyable.
-  <br><br>
-  Préparation du questionnaire romantique...
-  </div>
-  `;
-  setTimeout(nextQuestion, 2500);
-}
+setTimeout(nextQuestion,2000);
 
 function nextQuestion(){
   step++;
 
   if(step===1){
-    document.getElementById("content").innerHTML = `
-    <div class="question fade">
+    content.innerHTML=`
     Question 1 : Quel est notre jeu préféré ?
     <br><br>
     <button onclick="wrong()">Mario Kart</button>
     <button onclick="wrong()">Uno</button>
     <button onclick="wrong()">Monopoly</button>
-    <button onclick="correct()">🌵 Cactus</button>
-    </div>
+    <button onclick="nextQuestion()">🌵 Cactus</button>
     `;
   }
 
   else if(step===2){
-    document.getElementById("content").innerHTML = `
-    <div class="question fade">
+    content.innerHTML=`
     Question 2 : Qui est le plus amoureux ?
     <br><br>
-    <button onclick="cute()">Toi</button>
-    <button onclick="cute()">Moi</button>
-    <button onclick="cute()">Les deux</button>
-    <button onclick="cute()">L'univers entier</button>
-    </div>
+    <button onclick="nextQuestion()">Toi</button>
+    <button onclick="nextQuestion()">Moi</button>
+    <button onclick="nextQuestion()">Les deux</button>
+    <button onclick="nextQuestion()">L'univers entier</button>
     `;
   }
 
   else if(step===3){
-    document.getElementById("content").innerHTML = `
-    <div class="question fade">
+    content.innerHTML=`
     Question 3 : Probabilité que je t'adore ?
     <br><br>
     <button onclick="wrong()">12%</button>
     <button onclick="wrong()">47%</button>
     <button onclick="wrong()">99%</button>
-    <button onclick="correct()">∞</button>
-    </div>
+    <button onclick="nextQuestion()">∞</button>
     `;
   }
 
   else if(step===4){
-    document.getElementById("content").innerHTML = `
-    <div class="question fade">
+    content.innerHTML=`
     Sous quel drapeau Louise sera aux JO 2026 ?
     <br><br>
-    <button onclick="correct()">🇫🇷 FRANCE</button>
-    <button onclick="correct()">🇨🇭 SUISSE</button>
-    </div>
+    <button onclick="nextQuestion()">🇫🇷 FRANCE</button>
+    <button onclick="nextQuestion()">🇨🇭 SUISSE</button>
     `;
   }
 
   else if(step===5){
-    document.getElementById("content").innerHTML = `
-    <div class="question fade">
-    Alors Élodie...
-    <br><br>
-    Veux-tu être ma Valentine ? 💘
+    content.innerHTML=`
+    Veux-tu être ma Valentine Élodie ? 💘
     <br><br>
     <button onclick="finalYes()">YES 💖</button>
     <button onmouseover="moveNo()" id="noBtn">NO 😏</button>
-    </div>
     `;
   }
 }
 
 function wrong(){
-  alert("Mauvaise réponse 😏 Essaie encore...");
-}
-
-function correct(){
-  nextQuestion();
-}
-
-function cute(){
-  alert("Bonne réponse 😌");
-  nextQuestion();
+  alert("Hmm... pas sûr 😏 Essaie encore !");
 }
 
 function moveNo(){
-  let btn = document.getElementById("noBtn");
+  let btn=document.getElementById("noBtn");
   btn.style.position="absolute";
   btn.style.left=Math.random()*80+"%";
   btn.style.top=Math.random()*80+"%";
 }
 
 function finalYes(){
-  document.body.innerHTML = `
-  <h1>💖 Mission Valentine acceptée 💖</h1>
-  <p>L'univers vient officiellement de s'aligner.</p>
-  <p>Prépare-toi pour quelque chose d'incroyable 😌</p>
-  <br>
-  <a href="https://www.youtube.com/watch?v=XXXX" target="_blank">
-  <button>🎵 Lancer la musique</button>
-  </a>
+  document.body.innerHTML=`
+  <h1>💖 Mission Valentine Acceptée 💖</h1>
+  <p>L’univers vient officiellement de s’aligner.</p>
+  <p>Prépare-toi pour quelque chose d’incroyable.</p>
+  <canvas id="confetti"></canvas>
   `;
+  document.getElementById("music").play();
+  startConfetti();
 }
 
+function startConfetti(){
+  const canvas=document.getElementById("confetti");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  let pieces=[];
+  for(let i=0;i<150;i++){
+    pieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*6+2,
+      d:Math.random()*150
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white";
+    pieces.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+      ctx.fill();
+    });
+    update();
+  }
+
+  function update(){
+    pieces.forEach(p=>{
+      p.y+=2;
+      if(p.y>canvas.height){p.y=0;}
+    });
+  }
+
+  setInterval(draw,20);
+}
 </script>
 
 </body>
