@@ -1,101 +1,192 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Google Search</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      text-align: center;
-      margin-top: 100px;
-    }
-    .logo {
-      font-size: 64px;
-      font-weight: bold;
-    }
-    .logo span:nth-child(1) { color: #4285F4; }
-    .logo span:nth-child(2) { color: #DB4437; }
-    .logo span:nth-child(3) { color: #F4B400; }
-    .logo span:nth-child(4) { color: #4285F4; }
-    .logo span:nth-child(5) { color: #0F9D58; }
-    .logo span:nth-child(6) { color: #DB4437; }
+<meta charset="UTF-8">
+<title>Google Search</title>
 
-    input {
-      width: 60%;
-      padding: 12px;
-      font-size: 18px;
-      margin-top: 30px;
-    }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin-top: 100px;
+  background: white;
+}
 
-    button {
-      margin: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.logo {
+  font-size: 60px;
+  font-weight: bold;
+}
 
-    .result {
-      margin-top: 40px;
-      font-size: 22px;
-    }
+.logo span:nth-child(1){color:#4285F4;}
+.logo span:nth-child(2){color:#DB4437;}
+.logo span:nth-child(3){color:#F4B400;}
+.logo span:nth-child(4){color:#4285F4;}
+.logo span:nth-child(5){color:#0F9D58;}
+.logo span:nth-child(6){color:#DB4437;}
 
-    .hidden {
-      display: none;
-    }
-  </style>
+input {
+  width:60%;
+  padding:12px;
+  font-size:18px;
+  margin-top:30px;
+}
+
+button {
+  margin:10px;
+  padding:10px 20px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.hidden { display:none; }
+
+.question {
+  margin-top:40px;
+  font-size:22px;
+}
+
+.fade {
+  animation: fadein 1s;
+}
+
+@keyframes fadein {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+</style>
 </head>
+
 <body>
 
-  <div class="logo">
-    <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
-  </div>
+<div class="logo">
+<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+</div>
 
-  <input type="text" placeholder="Search Google or type a URL" id="search" />
+<input type="text" placeholder="Search Google or type a URL" id="search">
+<br>
+<button onclick="start()">Google Search</button>
+
+<div id="content"></div>
+
+<script>
+
+let step = 0;
+
+function start(){
+  document.getElementById("content").innerHTML = `
+  <div class="question fade">
+  🔍 Analyse en cours...
+  <br><br>
+  Résultat trouvé :
   <br>
-  <button onclick="search()">Google Search</button>
-
-  <div class="result hidden" id="result"></div>
-
-  <div class="hidden" id="question">
-    <p>Will you be my Valentine, <strong>Élodie</strong> ? 💘</p>
-    <button onclick="yes()">YES 💖</button>
-    <button id="no" onmouseover="moveNo()">NO 😏</button>
+  Élodie = officiellement trop incroyable.
+  <br><br>
+  Préparation du questionnaire romantique...
   </div>
+  `;
+  setTimeout(nextQuestion, 2500);
+}
 
-  <script>
-    function search() {
-      const text = document.getElementById("search").value;
-      const result = document.getElementById("result");
-      result.classList.remove("hidden");
+function nextQuestion(){
+  step++;
 
-      result.innerHTML = `
-        <p>🔍 Résultats pour : <strong>${text}</strong></p>
-        <p>• Tu es officiellement trop mignonne</p>
-        <p>• Source fiable : mon cœur</p>
-        <p>• Probabilité que je pense à toi : 100%</p>
-      `;
+  if(step===1){
+    document.getElementById("content").innerHTML = `
+    <div class="question fade">
+    Question 1 : Quel est notre jeu préféré ?
+    <br><br>
+    <button onclick="wrong()">Mario Kart</button>
+    <button onclick="wrong()">Uno</button>
+    <button onclick="wrong()">Monopoly</button>
+    <button onclick="correct()">🌵 Cactus</button>
+    </div>
+    `;
+  }
 
-      setTimeout(() => {
-        document.getElementById("question").classList.remove("hidden");
-      }, 2000);
-    }
+  else if(step===2){
+    document.getElementById("content").innerHTML = `
+    <div class="question fade">
+    Question 2 : Qui est le plus amoureux ?
+    <br><br>
+    <button onclick="cute()">Toi</button>
+    <button onclick="cute()">Moi</button>
+    <button onclick="cute()">Les deux</button>
+    <button onclick="cute()">L'univers entier</button>
+    </div>
+    `;
+  }
 
-    function moveNo() {
-      const btn = document.getElementById("no");
-      btn.style.position = "absolute";
-      btn.style.left = Math.random() * 80 + "%";
-      btn.style.top = Math.random() * 80 + "%";
-    }
+  else if(step===3){
+    document.getElementById("content").innerHTML = `
+    <div class="question fade">
+    Question 3 : Probabilité que je t'adore ?
+    <br><br>
+    <button onclick="wrong()">12%</button>
+    <button onclick="wrong()">47%</button>
+    <button onclick="wrong()">99%</button>
+    <button onclick="correct()">∞</button>
+    </div>
+    `;
+  }
 
-    function yes() {
-      document.body.innerHTML = `
-        <h1>💖 Bonne réponse 💖</h1>
-        <p>Tu viens officiellement de rendre quelqu’un très heureux.</p>
-        <p>Prépare-toi à une Saint-Valentin incroyable 😌</p>
-      `;
-    }
-  </script>
+  else if(step===4){
+    document.getElementById("content").innerHTML = `
+    <div class="question fade">
+    Sous quel drapeau Louise sera aux JO 2026 ?
+    <br><br>
+    <button onclick="correct()">🇫🇷 FRANCE</button>
+    <button onclick="correct()">🇨🇭 SUISSE</button>
+    </div>
+    `;
+  }
+
+  else if(step===5){
+    document.getElementById("content").innerHTML = `
+    <div class="question fade">
+    Alors Élodie...
+    <br><br>
+    Veux-tu être ma Valentine ? 💘
+    <br><br>
+    <button onclick="finalYes()">YES 💖</button>
+    <button onmouseover="moveNo()" id="noBtn">NO 😏</button>
+    </div>
+    `;
+  }
+}
+
+function wrong(){
+  alert("Mauvaise réponse 😏 Essaie encore...");
+}
+
+function correct(){
+  nextQuestion();
+}
+
+function cute(){
+  alert("Bonne réponse 😌");
+  nextQuestion();
+}
+
+function moveNo(){
+  let btn = document.getElementById("noBtn");
+  btn.style.position="absolute";
+  btn.style.left=Math.random()*80+"%";
+  btn.style.top=Math.random()*80+"%";
+}
+
+function finalYes(){
+  document.body.innerHTML = `
+  <h1>💖 Mission Valentine acceptée 💖</h1>
+  <p>L'univers vient officiellement de s'aligner.</p>
+  <p>Prépare-toi pour quelque chose d'incroyable 😌</p>
+  <br>
+  <a href="https://www.youtube.com/watch?v=XXXX" target="_blank">
+  <button>🎵 Lancer la musique</button>
+  </a>
+  `;
+}
+
+</script>
 
 </body>
 </html>
