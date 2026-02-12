@@ -44,7 +44,7 @@ button{
   transition:0.3s;
 }
 button:hover{transform:scale(1.1);}
-#noBtn{pointer-events:none;} /* NON impossible à cliquer */
+#noBtn{pointer-events:none; position:absolute;} /* NON impossible à cliquer */
 
 /* QUIZ */
 #quiz{
@@ -59,6 +59,7 @@ button:hover{transform:scale(1.1);}
   max-width:90%;
   color:white;
   text-shadow:2px 2px 5px black;
+  position:relative;
 }
 
 /* FINAL CINEMA */
@@ -154,6 +155,12 @@ function showQuestion(){
     }
   });
   document.getElementById("quiz").innerHTML = html;
+
+  // Faire bouger le NON
+  const noBtn = document.getElementById("noBtn");
+  if(noBtn){
+    moveNoButton(noBtn);
+  }
 }
 
 // CHECK ANSWERS
@@ -197,11 +204,23 @@ function showFinal(){
   startConfetti();
 
   const finalText = "Trop hâte de passer ce weekend ensemble 💖";
-  const subText = "C'est notre premier Saint Valentin, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
+  const subText = "C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
   typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
 
-  // MUSIQUE YOUTUBE
-  window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
+  // YES final grandit au centre
+  const yesBtn = document.createElement("button");
+  yesBtn.innerText = "YES 💖";
+  yesBtn.style.fontSize="40px";
+  yesBtn.style.padding="20px 40px";
+  yesBtn.style.position="absolute";
+  yesBtn.style.top="50%";
+  yesBtn.style.left="50%";
+  yesBtn.style.transform="translate(-50%, -50%) scale(1)";
+  yesBtn.style.transition="all 2s ease";
+  yesBtn.onclick = ()=>{ window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank"); };
+  final.appendChild(yesBtn);
+
+  setTimeout(()=>{ yesBtn.style.transform="translate(-50%, -50%) scale(3)"; },100);
 }
 
 // TYPE TEXTE
@@ -238,6 +257,19 @@ function startConfetti(){
     requestAnimationFrame(draw);
   }
   draw();
+}
+
+// BOUGE NON
+function moveNoButton(btn){
+  setInterval(()=>{
+    const quiz = document.getElementById("quiz");
+    const maxX = quiz.offsetWidth - btn.offsetWidth;
+    const maxY = quiz.offsetHeight - btn.offsetHeight;
+    const x = Math.random()*maxX;
+    const y = Math.random()*maxY;
+    btn.style.left = x+"px";
+    btn.style.top = y+"px";
+  },1000);
 }
 </script>
 </body>
