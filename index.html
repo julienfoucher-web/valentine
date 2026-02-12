@@ -82,8 +82,8 @@ button:hover{transform:scale(1.1);}
 }
 
 #finalText{
-  font-size:50px;
-  margin-top:200px;
+  font-size:40px;
+  margin-top:120px;
 }
 
 #subText{
@@ -92,7 +92,7 @@ button:hover{transform:scale(1.1);}
 }
 
 #capitalMessage{
-  font-size:40px;
+  font-size:35px;
   color:red;
   margin:20px;
   text-shadow:2px 2px 5px black;
@@ -118,6 +118,7 @@ button:hover{transform:scale(1.1);}
 <!-- FINAL CINEMA -->
 <div id="finalScreen">
   <canvas id="confetti"></canvas>
+  <button id="finalYes" style="font-size:30px; padding:15px 30px; margin-top:50px;">YES 💖</button>
   <h1 id="finalText"></h1>
   <p id="subText"></p>
 </div>
@@ -149,47 +150,39 @@ function showQuestion(){
   let html = "<h2>"+q.text+"</h2>";
   q.options.forEach((opt,i)=>{
     if(q.final && i===1){
-      html += `<button id="noBtn">${opt}</button>`; // NON impossible à cliquer
+      html += `<button id="noBtn">${opt}</button>`;
     } else {
       html += `<button onclick="checkAnswer(${i})">${opt}</button>`;
     }
   });
   document.getElementById("quiz").innerHTML = html;
 
-  // Faire bouger le NON
+  // BOUGE NON
   const noBtn = document.getElementById("noBtn");
-  if(noBtn){
-    moveNoButton(noBtn);
-  }
+  if(noBtn){ moveNoButton(noBtn); }
 }
 
 // CHECK ANSWERS
 function checkAnswer(i){
   const q = questions[step];
 
-  // QUESTIONS SPECIALES
   if(q.alwaysShowCorrect){
     if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
     if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre ! 🥒");
     if(q.text.includes("Savoie")){
       if(i===q.correct){
         document.getElementById("capitalMessage").innerHTML = "Bien sûr ! Flumet est la capitale 🏔️";
-      } else {
-        alert("Non 😏 La bonne réponse est Flumet !");
-      }
+      } else { alert("Non 😏 La bonne réponse est Flumet !"); }
     }
   }
 
-  // JO drapeau
   if(q.bothCorrect){
     if(i===0) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg')";
     if(i===1) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg')";
     alert("Bonne réponse ! 🎌");
   }
 
-  if(!q.alwaysShowCorrect && !q.bothCorrect && !q.final && i!==q.correct){
-    alert("Mauvaise réponse 😏"); return;
-  }
+  if(!q.alwaysShowCorrect && !q.bothCorrect && !q.final && i!==q.correct){ alert("Mauvaise réponse 😏"); return; }
 
   step++;
   showQuestion();
@@ -198,29 +191,20 @@ function checkAnswer(i){
 // FINAL CINEMA
 function showFinal(){
   document.getElementById("quiz").style.display="none";
-  const final = document.getElementById("finalScreen");
-  final.style.display="block";
+  document.getElementById("finalScreen").style.display="block";
 
   startConfetti();
 
+  // TEXTE FINAL
   const finalText = "Trop hâte de passer ce weekend ensemble 💖";
   const subText = "C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
   typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
 
-  // YES final grandit au centre
-  const yesBtn = document.createElement("button");
-  yesBtn.innerText = "YES 💖";
-  yesBtn.style.fontSize="40px";
-  yesBtn.style.padding="20px 40px";
-  yesBtn.style.position="absolute";
-  yesBtn.style.top="50%";
-  yesBtn.style.left="50%";
-  yesBtn.style.transform="translate(-50%, -50%) scale(1)";
-  yesBtn.style.transition="all 2s ease";
+  // YES final
+  const yesBtn = document.getElementById("finalYes");
   yesBtn.onclick = ()=>{ window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank"); };
-  final.appendChild(yesBtn);
-
-  setTimeout(()=>{ yesBtn.style.transform="translate(-50%, -50%) scale(3)"; },100);
+  yesBtn.style.transition="all 1.5s ease";
+  setTimeout(()=>{ yesBtn.style.transform="scale(1.5)"; },200);
 }
 
 // TYPE TEXTE
@@ -269,7 +253,7 @@ function moveNoButton(btn){
     const y = Math.random()*maxY;
     btn.style.left = x+"px";
     btn.style.top = y+"px";
-  },1000);
+  },800);
 }
 </script>
 </body>
