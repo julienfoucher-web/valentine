@@ -10,6 +10,8 @@ body{
   text-align:center;
   background:white;
   overflow-x:hidden;
+  background-size:cover;
+  background-position:center;
 }
 
 /* FAUX GOOGLE */
@@ -44,15 +46,17 @@ button{
   transition:0.3s;
 }
 button:hover{transform:scale(1.1);}
+#noBtn{pointer-events:none;} /* impossible à cliquer */
 
+/* QUIZ */
 #quiz{
   display:none;
-  margin-top:100px;
-}
-
-/* Animation bouton NON */
-#noBtn{
-  position:relative;
+  margin-top:50px;
+  padding:30px;
+  background:rgba(255,255,255,0.8);
+  border-radius:15px;
+  display:inline-block;
+  max-width:90%;
 }
 
 /* FINAL CINEMA */
@@ -83,6 +87,12 @@ button:hover{transform:scale(1.1);}
   font-size:25px;
   margin-top:20px;
 }
+
+#capitalMessage{
+  font-size:40px;
+  color:#FF0000;
+  margin:20px;
+}
 </style>
 </head>
 <body>
@@ -99,6 +109,7 @@ button:hover{transform:scale(1.1);}
 
 <!-- QUIZ -->
 <div id="quiz"></div>
+<div id="capitalMessage"></div>
 
 <!-- FINAL CINEMA -->
 <div id="finalScreen">
@@ -110,16 +121,22 @@ button:hover{transform:scale(1.1);}
 <script>
 let step = 0;
 
+// QUESTIONS CORRIGEES ET AJOUT JO
 const questions = [
   {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
-  {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:1},
+  {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:0, alwaysShowCorrect:true},
   {text:"Que voit Julien dans les nuages ?", options:["Scorpion 🦂","Crocodile 🐊"], correct:0},
   {text:"Quelle est la meilleure des voitures ?", options:["Le Carosse","Ferrari"], correct:1, alwaysShowCorrect:true},
   {text:"Qu'est ce qu'un pickles ?", options:["Un produit dans du vinaigre","Un produit dans de l'huile"], correct:0, alwaysShowCorrect:true},
+  {text:"Sous quel drapeau Louise va participer aux Jeux Olympiques ?", options:["France","Suisse"], correct:0, bothCorrect:true},
   {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
 ];
 
+// IMAGE DE FOND
+const background = "https://images.unsplash.com/photo-1544117510-eca3c0b215f3?auto=format&fit=crop&w=1470&q=80"; // montagne enneigée
+
 function startQuiz(){
+  document.body.style.backgroundImage = `url(${background})`;
   document.getElementById("googlePage").style.display="none";
   document.getElementById("quiz").style.display="block";
   showQuestion();
@@ -128,10 +145,11 @@ function startQuiz(){
 function showQuestion(){
   if(step >= questions.length){ showFinal(); return; }
   const q = questions[step];
+  document.getElementById("capitalMessage").innerHTML = "";
   let html = "<h2>"+q.text+"</h2>";
   q.options.forEach((opt,i)=>{
     if(q.final && i===1){
-      html += `<button id="noBtn" onclick="moveNoButton()">${opt}</button>`;
+      html += `<button id="noBtn">${opt}</button>`; // NON impossible à cliquer
     } else {
       html += `<button onclick="checkAnswer(${i})">${opt}</button>`;
     }
@@ -139,41 +157,52 @@ function showQuestion(){
   document.getElementById("quiz").innerHTML = html;
 }
 
-// BOUTON NON qui bouge
-function moveNoButton(){
-  const btn = document.getElementById("noBtn");
-  btn.style.position="absolute";
-  btn.style.left = Math.random()*70+"%";
-  btn.style.top = Math.random()*70+"%";
-}
-
-// Vérification réponses
+// VERIFICATION REPONSES
 function checkAnswer(i){
   const q = questions[step];
+
+  // Toujours afficher bonne réponse pour certaines questions
   if(q.alwaysShowCorrect){
     if(q.text.includes("Ferrari")) alert("C’est vrai que Ferrari est la meilleure !");
     if(q.text.includes("pickles")) alert("C’est vrai, un pickles est un produit dans du vinaigre !");
-  } else if(i!==q.correct && !q.final){
+    if(q.text.includes("Savoie")){
+      if(i===q.correct){
+        document.getElementById("capitalMessage").innerHTML = "Bien sûr ! Flumet est la capitale 🏔️";
+      } else {
+        alert("Non 😏 La bonne réponse est Flumet !");
+      }
+    }
+  }
+
+  // JO drapeau
+  if(q.bothCorrect){
+    if(i===0) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg')";
+    if(i===1) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg')";
+    alert("Bonne réponse ! 🎌");
+  }
+
+  // Si mauvaise réponse classique
+  if(!q.alwaysShowCorrect && !q.bothCorrect && !q.final && i!==q.correct){
     alert("Mauvaise réponse 😏"); return;
   }
-  step++; showQuestion();
+
+  step++;
+  showQuestion();
 }
 
-// AFFICHAGE FINAL
+// FINAL CINEMA
 function showFinal(){
   document.getElementById("quiz").style.display="none";
   const final = document.getElementById("finalScreen");
   final.style.display="block";
 
-  // CONFETTIS
   startConfetti();
 
-  // TEXTE FINAL LETTRE PAR LETTRE
   const finalText = "Trop hâte de passer ce weekend ensemble 💖";
   const subText = "C'est notre premier Saint Valentin, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
-  typeText("finalText", finalText, 50, () => { typeText("subText", subText, 40); });
+  typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
 
-  // YES grandit en slow-motion
+  // YES grandit en slow motion
   const yesBtn = document.querySelector("button:contains('YES')");
   if(yesBtn){
     yesBtn.style.transition="all 2s ease";
@@ -186,7 +215,7 @@ function showFinal(){
 
 // TEXTE LETTRE PAR LETTRE
 function typeText(id,text,speed,callback){
-  const el = document.getElementById(id);
+  const el=document.getElementById(id);
   el.innerHTML="";
   let i=0;
   const timer = setInterval(()=>{
