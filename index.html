@@ -8,8 +8,8 @@ body{
   margin:0;
   font-family:Arial, sans-serif;
   text-align:center;
-  background:white;
   overflow-x:hidden;
+  background:white;
 }
 
 /* FAUX GOOGLE */
@@ -163,7 +163,7 @@ function checkAnswer(i){
   // QUESTIONS SPECIALES
   if(q.alwaysShowCorrect){
     if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
-    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre !");
+    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre ! 🥒");
     if(q.text.includes("Savoie")){
       if(i===q.correct){
         document.getElementById("capitalMessage").innerHTML = "Bien sûr ! Flumet est la capitale 🏔️";
@@ -173,6 +173,7 @@ function checkAnswer(i){
     }
   }
 
+  // JO drapeau
   if(q.bothCorrect){
     if(i===0) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg')";
     if(i===1) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg')";
@@ -198,13 +199,6 @@ function showFinal(){
   const finalText = "Trop hâte de passer ce weekend ensemble 💖";
   const subText = "C'est notre premier Saint Valentin, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
   typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
-
-  // YES effet slow motion
-  const yesBtn = document.querySelector("button:contains('YES')");
-  if(yesBtn){
-    yesBtn.style.transition="all 2s ease";
-    yesBtn.style.transform="scale(3)";
-  }
 
   // MUSIQUE YOUTUBE
   window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
