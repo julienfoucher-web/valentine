@@ -1,0 +1,158 @@
+!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Quiz Test</title>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  text-align:center;
+  overflow-x:hidden;
+}
+
+#quiz {
+  display:none;
+  margin:50px auto;
+  padding:30px;
+  max-width:600px;
+  background-image: url('montblanc.jpg');
+  background-size: cover;
+  background-position: center;
+  color:white;
+  text-shadow: 1px 1px 4px black;
+  border-radius:15px;
+  position:relative;
+}
+
+button {
+  margin:10px;
+  padding:12px 20px;
+  font-size:16px;
+  cursor:pointer;
+  border:none;
+  border-radius:20px;
+}
+
+#noBtn {
+  pointer-events:none;
+  position:absolute;
+}
+
+#capitalMessage {
+  font-size:28px;
+  color:red;
+  margin:15px 0;
+  text-shadow:1px 1px 3px black;
+}
+
+#finalScreen {
+  display:none;
+  margin-top:50px;
+}
+
+#finalText {
+  font-size:30px;
+}
+
+#finalYes {
+  font-size:20px;
+  padding:12px 25px;
+  margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<div id="quiz"></div>
+<div id="capitalMessage"></div>
+<div id="finalScreen">
+  <div id="finalText"></div>
+  <button id="finalYes">YES 💖</button>
+</div>
+
+<script>
+let step=0;
+const questions=[
+  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
+  {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:0, alwaysShowCorrect:true},
+  {text:"Quelle est la meilleure des voitures ?", options:["Le Carosse","Ferrari"], correct:1, alwaysShowCorrect:true},
+  {text:"Qu'est ce qu'un pickles ?", options:["Un produit dans du vinaigre","Un produit dans de l'huile"], correct:0, alwaysShowCorrect:true},
+  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
+];
+
+function startQuiz(){
+  document.getElementById("quiz").style.display="block";
+  showQuestion();
+}
+
+function showQuestion(){
+  if(step>=questions.length){ showFinal(); return; }
+  const q=questions[step];
+  let html="<h2>"+q.text+"</h2>";
+  q.options.forEach((opt,i)=>{
+    if(q.final && i===1){
+      html+=`<button id="noBtn">${opt}</button>`;
+      moveNoButton(document.getElementById("noBtn"));
+    } else {
+      html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
+    }
+  });
+  document.getElementById("quiz").innerHTML=html;
+  document.getElementById("capitalMessage").innerHTML="";
+}
+
+function checkAnswer(i){
+  const q=questions[step];
+  if(q.alwaysShowCorrect){
+    if(q.text.includes("Flumet")){
+      if(i===q.correct){
+        document.getElementById("capitalMessage").innerText="Bien sûr ! Flumet est la capitale 🏔️";
+      } else { alert("Non 😏 La bonne réponse est Flumet !"); }
+    }
+    if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
+    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre ! 🥒");
+  }
+  step++;
+  showQuestion();
+}
+
+// FINAL
+function showFinal(){
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("finalScreen").style.display="block";
+  typeText("finalText","C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️",50);
+  document.getElementById("finalYes").onclick=function(){
+    window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
+  };
+}
+
+function typeText(id,text,speed){
+  const el=document.getElementById(id);
+  let i=0;
+  el.innerHTML="";
+  const timer=setInterval(()=>{
+    el.innerHTML+=text.charAt(i);
+    i++;
+    if(i>=text.length) clearInterval(timer);
+  },speed);
+}
+
+// BOUGE NON
+function moveNoButton(btn){
+  setInterval(()=>{
+    const quiz=document.getElementById("quiz");
+    const maxX=quiz.offsetWidth-btn.offsetWidth;
+    const maxY=quiz.offsetHeight-btn.offsetHeight;
+    const x=Math.random()*maxX;
+    const y=Math.random()*maxY;
+    btn.style.left=x+"px";
+    btn.style.top=y+"px";
+  },800);
+}
+
+// DÉMARRE AUTOMATIQUE pour test
+startQuiz();
+</script>
+</body>
+</html>
