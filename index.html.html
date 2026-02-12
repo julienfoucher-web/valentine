@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Quiz</title>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  text-align:center;
+  background-image: url('montblanc.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+  overflow-x: hidden;
+}#quiz { margin:50px auto; padding:30px; max-width:700px; background: rgba(0,0,0,0.4); border-radius:15px; position:relative; }
+
+button { margin:10px; padding:12px 20px; font-size:16px; cursor:pointer; border:none; border-radius:20px; }
+
+#noBtn { pointer-events:none; position:absolute; }
+
+#capitalMessage, #carMessage, #picklesMessage { font-size:28px; color:red; margin:15px 0; text-shadow:1px 1px 3px black; }
+
+#finalScreen { display:none; margin-top:50px; }
+
+#finalText { font-size:30px; }
+
+#finalYes { font-size:20px; padding:12px 25px; margin-top:20px; }
+
+.flag { width:100px; margin:20px auto; } </style>
+
+</head>
+<body><div id="quiz"></div>
+<div id="capitalMessage"></div>
+<div id="carMessage"></div>
+<div id="picklesMessage"></div>
+<div id="flagContainer"></div>
+<div id="finalScreen">
+  <div id="finalText"></div>
+  <button id="finalYes">YES 💖</button>
+</div><script>
+let step=0;
+const questions=[
+  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
+  {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:0, alwaysShowCorrect:true},
+  {text:"Quelle est la meilleure des voitures ?", options:["Le Carosse","Ferrari"], correct:1, alwaysShowCorrect:true},
+  {text:"Qu'est ce qu'un pickles ?", options:["Un produit dans du vinaigre","Un produit dans de l'huile"], correct:0, alwaysShowCorrect:true},
+  {text:"Sous quel drapeau Louise sera au JO 2026 ?", options:["France","Suisse"], correct:0, correct2:1, showFlag:true},
+  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
+];
+
+function startQuiz(){
+  showQuestion();
+}
+
+function showQuestion(){
+  if(step>=questions.length){ showFinal(); return; }
+  const q=questions[step];
+  let html=`<h2>${q.text}</h2>`;
+  q.options.forEach((opt,i)=>{
+    if(q.final && i===1){
+      html+=`<button id="noBtn">${opt}</button>`;
+      moveNoButton(document.getElementById("noBtn"));
+    } else {
+      html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
+    }
+  });
+  document.getElementById("quiz").innerHTML=html;
+  document.getElementById("capitalMessage").innerHTML="";
+  document.getElementById("carMessage").innerHTML="";
+  document.getElementById("picklesMessage").innerHTML="";
+  document.getElementById("flagContainer").innerHTML="";
+}
+
+function checkAnswer(i){
+  const q=questions[step];
+  if(q.alwaysShowCorrect){
+    if(q.text.includes("Flumet") && i===q.correct){
+      document.getElementById("capitalMessage").innerText="Bien sûr ! Flumet est la capitale 🏔️";
+    }
+    if(q.text.includes("Ferrari") && i!==q.correct){
+      document.getElementById("carMessage").innerText="C’est vrai que Ferrari est la meilleure ! 🏎️";
+    }
+    if(q.text.includes("pickles") && i!==q.correct){
+      document.getElementById("picklesMessage").innerText="C’est vrai, un pickles est un produit dans du vinaigre ! 🥒";
+    }
+  }
+
+  if(q.showFlag){
+    let flagURL="";
+    if(i===0){ flagURL="https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"; }
+    if(i===1){ flagURL="https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg"; }
+    if(flagURL) document.getElementById("flagContainer").innerHTML=`<img class='flag' src='${flagURL}' />`;
+  }
+
+  step++;
+  showQuestion();
+}
+
+function showFinal(){
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("finalScreen").style.display="block";
+  typeText("finalText","C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️",50);
+
+  const yesBtn=document.getElementById("finalYes");
+  yesBtn.style.transition="all 2s ease";
+  yesBtn.onclick=function(){
+    window.open("https://www.youtube.com/embed/XoAKZj5JZUY?autoplay=1","_blank");
+  };
+
+  // Animation YES
+  let scale=1;
+  setInterval(()=>{
+    scale+=0.05;
+    if(scale>1.5) scale=1;
+    yesBtn.style.transform=`scale(${scale})`;
+  },100);
+
+  // Confettis simples
+  setInterval(()=>{
+    const c=document.createElement('div');
+    c.innerText='🎉';
+    c.style.position='fixed';
+    c.style.left=Math.random()*window.innerWidth+'px';
+    c.style.top='-20px';
+    c.style.fontSize=Math.random()*30+20+'px';
+    c.style.pointerEvents='none';
+    document.body.appendChild(c);
+    let top=0;
+    const fall=setInterval(()=>{
+      top+=5;
+      c.style.top=top+'px';
+      if(top>window.innerHeight){ c.remove(); clearInterval(fall); }
+    },50);
+  },300);
+}
+
+function typeText(id,text,speed){
+  const el=document.getElementById(id);
+  let i=0;
+  el.innerHTML="";
+  const timer=setInterval(()=>{
+    el.innerHTML+=text.charAt(i);
+    i++;
+    if(i>=text.length) clearInterval(timer);
+  },speed);
+}
+
+function moveNoButton(btn){
+  setInterval(()=>{
+    const quiz=document.getElementById("quiz");
+    const maxX=quiz.offsetWidth-btn.offsetWidth;
+    const maxY=quiz.offsetHeight-btn.offsetHeight;
+    const x=Math.random()*maxX;
+    const y=Math.random()*maxY;
+    btn.style.left=x+"px";
+    btn.style.top=y+"px";
+  },800);
+}
+
+startQuiz();
+</script></body>
+</html>
