@@ -2,22 +2,25 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Valentine Surprise Hollywood</title>
+<title>Valentine Mission</title>
+
 <style>
-body {
+body{
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family:Arial, sans-serif;
   text-align:center;
-  background: white;
-  color:black;
-  overflow-x:hidden;
 }
 
-.logo {
-  font-size:60px;
-  font-weight:bold;
-  margin-top:100px;
+/* GOOGLE */
+#googlePage{
+  margin-top:120px;
 }
+
+.logo{
+  font-size:70px;
+  font-weight:bold;
+}
+
 .logo span:nth-child(1){color:#4285F4;}
 .logo span:nth-child(2){color:#DB4437;}
 .logo span:nth-child(3){color:#F4B400;}
@@ -25,613 +28,117 @@ body {
 .logo span:nth-child(5){color:#0F9D58;}
 .logo span:nth-child(6){color:#DB4437;}
 
-input {
+input{
   width:60%;
-  padding:12px;
+  padding:15px;
   font-size:18px;
   margin-top:30px;
 }
 
-button {
-  margin:10px;
+button{
   padding:12px 25px;
   font-size:18px;
   border:none;
   border-radius:25px;
   cursor:pointer;
-  transition:0.3s;
+  margin-top:20px;
 }
 
-button:hover {transform:scale(1.1);}
-
-.correct {
-  background-color: #0F9D58;
-  color:white;
-  padding:5px 10px;
-  border-radius:5px;
-  margin-left:10px;
-  font-size:16px;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-#finalScreen {
+/* QUESTIONS */
+#quiz{
   display:none;
-  position:relative;
-  width:100%;
-  height:100vh;
-  background:black;
-  color:white;
-  text-align:center;
-}
-
-#confetti {
-  position:absolute;
-  top:0;
-  left:0;
-  pointer-events:none;
-}
-
-@keyframes heartbeat {
-  0% { transform: scale(1);}
-  25% { transform: scale(1.05);}
-  50% { transform: scale(1);}
-  75% { transform: scale(1.05);}
-  100% { transform: scale(1);}
-}
-</style>
-</head>
-<body>
-
-<!-- FAUX GOOGLE -->
-<div id="googleStart">
-  <div class="logo">
-    <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
-  </div>
-  <input type="text" placeholder="Search Google or type a URL" id="search">
-  <br>
-  <button onclick="start()">Google Search</button>
-</div>
-
-<!-- QUESTIONS -->
-<div id="content" class="question" style="display:none;"></div>
-
-<!-- ÉCRAN FINAL -->
-<div id="finalScreen">
-  <h1>💖 Mission Valentine Acceptée 💖</h1>
-  <p>L'univers vient officiellement de s'aligner...</p>
-  <p>Prépare-toi pour quelque chose d'incroyable.</p>
-  <button onclick="playMusic()">🎵 Lancer la musique</button>
-  <canvas id="confetti"></canvas>
-  <audio id="heartbeat" src="https://www.soundjay.com/human/heartbeat-01.mp3" loop></audio>
-</div>
-
-<script>
-let step=0;
-
-// QUESTIONS
-const questions = [
-  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
-  {text:"Qui est le plus amoureux ?", options:["Toi","Moi","Les deux","L'univers entier"], correct:[0,1,2,3]},
-  {text:"Probabilité que je t'adore ?", options:["12%","47%","99%","∞"], correct:3},
-  {text:"Sous quel drapeau Louise sera aux JO 2026 ?", options:["🇫🇷 FRANCE","🇨🇭 SUISSE"], correct:[0,1]},
-  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0}
-];
-
-// LANCER LA SEQUENCE
-function start(){
-  document.getElementById("googleStart").style.display="none";
-  document.getElementById("content").style.display="block";
-  nextQuestion();
-}
-
-// AFFICHER QUESTION
-function nextQuestion(){
-  if(step>=questions.length){
-    finalScene();
-    return;
-  }
-  const q=questions[step];
-  let html=`<div class="question fade">${q.text}<br><br>`;
-  q.options.forEach((opt,i)=>{
-    html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
-  });
-  html+="</div>";
-  document.getElementById("content").innerHTML=html;
-}
-
-// VERIFIER REPONSE
-function checkAnswer(i){
-  const q=questions[step];
-  let isCorrect=false;
-  if(Array.isArray(q.correct)){ if(q.correct.includes(i)) isCorrect=true;}
-  else if(i===q.correct) isCorrect=true;
-
-  if(isCorrect){
-    // Indicateur de bonne réponse
-    let btns=document.querySelectorAll("button");
-    btns[i].innerHTML+=` <span class="correct">✓</span>`;
-    setTimeout(()=>{step++; nextQuestion();},800);
-  } else {alert("Mauvaise réponse 😏 Essaie encore...");}
-}
-
-// ÉCRAN FINAL CINÉMA
-function finalScene(){
-  document.getElementById("content").style.display="none";
-  const finalScreen=document.getElementById("finalScreen");
-  finalScreen.style.display="block";
-
-  // Battement de cœur
-  const heartbeat=document.getElementById("heartbeat");
-  heartbeat.play();
-
-  // Confettis
-  startConfetti();
-}
-
-// CONFETTIS
-function startConfetti(){
-  const canvas=document.getElementById("confetti");
-  const ctx=canvas.getContext("2d");
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-
-  let pieces=[];
-  for(let i=0;i<200;i++){
-    pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*150});
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    pieces.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
-      ctx.fill();
-      p.y+=2;
-      if(p.y>canvas.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-}
-
-// LANCER MUSIQUE YOUTUBE
-function playMusic(){
-  const musicLink="https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1";
-  window.open(musicLink,"_blank");
-}<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Valentine Surprise Hollywood</title>
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  text-align:center;
-  background: white;
-  color:black;
-  overflow-x:hidden;
-}
-
-.logo {
-  font-size:60px;
-  font-weight:bold;
   margin-top:100px;
 }
-.logo span:nth-child(1){color:#4285F4;}
-.logo span:nth-child(2){color:#DB4437;}
-.logo span:nth-child(3){color:#F4B400;}
-.logo span:nth-child(4){color:#4285F4;}
-.logo span:nth-child(5){color:#0F9D58;}
-.logo span:nth-child(6){color:#DB4437;}
 
-input {
-  width:60%;
-  padding:12px;
-  font-size:18px;
-  margin-top:30px;
-}
-
-button {
-  margin:10px;
-  padding:12px 25px;
-  font-size:18px;
-  border:none;
-  border-radius:25px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover {transform:scale(1.1);}
-
-.correct {
-  background-color: #0F9D58;
+.correct{
+  background-color:#0F9D58;
   color:white;
-  padding:5px 10px;
-  border-radius:5px;
-  margin-left:10px;
-  font-size:16px;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-#finalScreen {
-  display:none;
-  position:relative;
-  width:100%;
-  height:100vh;
-  background:black;
-  color:white;
-  text-align:center;
-}
-
-#confetti {
-  position:absolute;
-  top:0;
-  left:0;
-  pointer-events:none;
-}
-
-@keyframes heartbeat {
-  0% { transform: scale(1);}
-  25% { transform: scale(1.05);}
-  50% { transform: scale(1);}
-  75% { transform: scale(1.05);}
-  100% { transform: scale(1);}
 }
 </style>
 </head>
+
 <body>
 
 <!-- FAUX GOOGLE -->
-<div id="googleStart">
+<div id="googlePage">
   <div class="logo">
     <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
   </div>
-  <input type="text" placeholder="Search Google or type a URL" id="search">
+
+  <input type="text" id="searchInput" placeholder="Search Google or type a URL">
   <br>
-  <button onclick="start()">Google Search</button>
+  <button onclick="launchSearch()">Google Search</button>
 </div>
 
-<!-- QUESTIONS -->
-<div id="content" class="question" style="display:none;"></div>
-
-<!-- ÉCRAN FINAL -->
-<div id="finalScreen">
-  <h1>💖 Mission Valentine Acceptée 💖</h1>
-  <p>L'univers vient officiellement de s'aligner...</p>
-  <p>Prépare-toi pour quelque chose d'incroyable.</p>
-  <button onclick="playMusic()">🎵 Lancer la musique</button>
-  <canvas id="confetti"></canvas>
-  <audio id="heartbeat" src="https://www.soundjay.com/human/heartbeat-01.mp3" loop></audio>
-</div>
+<!-- QUIZ -->
+<div id="quiz"></div>
 
 <script>
-let step=0;
 
-// QUESTIONS
+let current = 0;
+
 const questions = [
-  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
-  {text:"Qui est le plus amoureux ?", options:["Toi","Moi","Les deux","L'univers entier"], correct:[0,1,2,3]},
-  {text:"Probabilité que je t'adore ?", options:["12%","47%","99%","∞"], correct:3},
-  {text:"Sous quel drapeau Louise sera aux JO 2026 ?", options:["🇫🇷 FRANCE","🇨🇭 SUISSE"], correct:[0,1]},
-  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0}
+  {
+    text:"Quel est notre jeu préféré ?",
+    options:["Mario Kart","Uno","Monopoly","🌵 Cactus"],
+    correct:3
+  },
+  {
+    text:"Probabilité que je t'adore ?",
+    options:["12%","47%","99%","∞"],
+    correct:3
+  },
+  {
+    text:"Veux-tu être ma Valentine ? 💘",
+    options:["YES 💖","NO 😏"],
+    correct:0
+  }
 ];
 
-// LANCER LA SEQUENCE
-function start(){
-  document.getElementById("googleStart").style.display="none";
-  document.getElementById("content").style.display="block";
-  nextQuestion();
+function launchSearch(){
+  // même si elle tape rien, on lance quand même
+  document.getElementById("googlePage").style.display="none";
+  document.getElementById("quiz").style.display="block";
+  showQuestion();
 }
 
-// AFFICHER QUESTION
-function nextQuestion(){
-  if(step>=questions.length){
-    finalScene();
+function showQuestion(){
+  if(current >= questions.length){
+    showFinal();
     return;
   }
-  const q=questions[step];
-  let html=`<div class="question fade">${q.text}<br><br>`;
-  q.options.forEach((opt,i)=>{
-    html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
+
+  const q = questions[current];
+  let html = "<h2>"+q.text+"</h2>";
+
+  q.options.forEach((opt, index)=>{
+    html += `<button onclick="checkAnswer(${index})">${opt}</button><br><br>`;
   });
-  html+="</div>";
-  document.getElementById("content").innerHTML=html;
+
+  document.getElementById("quiz").innerHTML = html;
 }
 
-// VERIFIER REPONSE
-function checkAnswer(i){
-  const q=questions[step];
-  let isCorrect=false;
-  if(Array.isArray(q.correct)){ if(q.correct.includes(i)) isCorrect=true;}
-  else if(i===q.correct) isCorrect=true;
+function checkAnswer(index){
+  const q = questions[current];
 
-  if(isCorrect){
-    // Indicateur de bonne réponse
-    let btns=document.querySelectorAll("button");
-    btns[i].innerHTML+=` <span class="correct">✓</span>`;
-    setTimeout(()=>{step++; nextQuestion();},800);
-  } else {alert("Mauvaise réponse 😏 Essaie encore...");}
-}
-
-// ÉCRAN FINAL CINÉMA
-function finalScene(){
-  document.getElementById("content").style.display="none";
-  const finalScreen=document.getElementById("finalScreen");
-  finalScreen.style.display="block";
-
-  // Battement de cœur
-  const heartbeat=document.getElementById("heartbeat");
-  heartbeat.play();
-
-  // Confettis
-  startConfetti();
-}
-
-// CONFETTIS
-function startConfetti(){
-  const canvas=document.getElementById("confetti");
-  const ctx=canvas.getContext("2d");
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-
-  let pieces=[];
-  for(let i=0;i<200;i++){
-    pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*150});
+  if(index === q.correct){
+    current++;
+    showQuestion();
+  } else {
+    alert("Mauvaise réponse 😏 Essaie encore !");
   }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    pieces.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
-      ctx.fill();
-      p.y+=2;
-      if(p.y>canvas.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-
-  draw();
 }
 
-// LANCER MUSIQUE YOUTUBE
-function playMusic(){
-  const musicLink="https://www.youtube.com/embed/<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Valentine Surprise Hollywood</title>
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  text-align:center;
-  background: white;
-  color:black;
-  overflow-x:hidden;
-}
-
-.logo {
-  font-size:60px;
-  font-weight:bold;
-  margin-top:100px;
-}
-.logo span:nth-child(1){color:#4285F4;}
-.logo span:nth-child(2){color:#DB4437;}
-.logo span:nth-child(3){color:#F4B400;}
-.logo span:nth-child(4){color:#4285F4;}
-.logo span:nth-child(5){color:#0F9D58;}
-.logo span:nth-child(6){color:#DB4437;}
-
-input {
-  width:60%;
-  padding:12px;
-  font-size:18px;
-  margin-top:30px;
-}
-
-button {
-  margin:10px;
-  padding:12px 25px;
-  font-size:18px;
-  border:none;
-  border-radius:25px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover {transform:scale(1.1);}
-
-.correct {
-  background-color: #0F9D58;
-  color:white;
-  padding:5px 10px;
-  border-radius:5px;
-  margin-left:10px;
-  font-size:16px;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-#finalScreen {
-  display:none;
-  position:relative;
-  width:100%;
-  height:100vh;
-  background:black;
-  color:white;
-  text-align:center;
-}
-
-#confetti {
-  position:absolute;
-  top:0;
-  left:0;
-  pointer-events:none;
-}
-
-@keyframes heartbeat {
-  0% { transform: scale(1);}
-  25% { transform: scale(1.05);}
-  50% { transform: scale(1);}
-  75% { transform: scale(1.05);}
-  100% { transform: scale(1);}
-}
-</style>
-</head>
-<body>
-
-<!-- FAUX GOOGLE -->
-<div id="googleStart">
-  <div class="logo">
-    <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+function showFinal(){
+  document.body.innerHTML = `
+  <div style="background:black;color:white;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+    <h1 style="font-size:50px;">💖 ELLE A DIT OUI 💖</h1>
+    <p style="font-size:25px;">Mission Valentine accomplie.</p>
   </div>
-  <input type="text" placeholder="Search Google or type a URL" id="search">
-  <br>
-  <button onclick="start()">Google Search</button>
-</div>
-
-<!-- QUESTIONS -->
-<div id="content" class="question" style="display:none;"></div>
-
-<!-- ÉCRAN FINAL -->
-<div id="finalScreen">
-  <h1>💖 Mission Valentine Acceptée 💖</h1>
-  <p>L'univers vient officiellement de s'aligner...</p>
-  <p>Prépare-toi pour quelque chose d'incroyable.</p>
-  <button onclick="playMusic()">🎵 Lancer la musique</button>
-  <canvas id="confetti"></canvas>
-  <audio id="heartbeat" src="https://www.soundjay.com/human/heartbeat-01.mp3" loop></audio>
-</div>
-
-<script>
-let step=0;
-
-// QUESTIONS
-const questions = [
-  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
-  {text:"Qui est le plus amoureux ?", options:["Toi","Moi","Les deux","L'univers entier"], correct:[0,1,2,3]},
-  {text:"Probabilité que je t'adore ?", options:["12%","47%","99%","∞"], correct:3},
-  {text:"Sous quel drapeau Louise sera aux JO 2026 ?", options:["🇫🇷 FRANCE","🇨🇭 SUISSE"], correct:[0,1]},
-  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0}
-];
-
-// LANCER LA SEQUENCE
-function start(){
-  document.getElementById("googleStart").style.display="none";
-  document.getElementById("content").style.display="block";
-  nextQuestion();
-}
-
-// AFFICHER QUESTION
-function nextQuestion(){
-  if(step>=questions.length){
-    finalScene();
-    return;
-  }
-  const q=questions[step];
-  let html=`<div class="question fade">${q.text}<br><br>`;
-  q.options.forEach((opt,i)=>{
-    html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
-  });
-  html+="</div>";
-  document.getElementById("content").innerHTML=html;
-}
-
-// VERIFIER REPONSE
-function checkAnswer(i){
-  const q=questions[step];
-  let isCorrect=false;
-  if(Array.isArray(q.correct)){ if(q.correct.includes(i)) isCorrect=true;}
-  else if(i===q.correct) isCorrect=true;
-
-  if(isCorrect){
-    // Indicateur de bonne réponse
-    let btns=document.querySelectorAll("button");
-    btns[i].innerHTML+=` <span class="correct">✓</span>`;
-    setTimeout(()=>{step++; nextQuestion();},800);
-  } else {alert("Mauvaise réponse 😏 Essaie encore...");}
-}
-
-// ÉCRAN FINAL CINÉMA
-function finalScene(){
-  document.getElementById("content").style.display="none";
-  const finalScreen=document.getElementById("finalScreen");
-  finalScreen.style.display="block";
-
-  // Battement de cœur
-  const heartbeat=document.getElementById("heartbeat");
-  heartbeat.play();
-
-  // Confettis
-  startConfetti();
-}
-
-// CONFETTIS
-function startConfetti(){
-  const canvas=document.getElementById("confetti");
-  const ctx=canvas.getContext("2d");
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-
-  let pieces=[];
-  for(let i=0;i<200;i++){
-    pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*150});
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    pieces.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
-      ctx.fill();
-      p.y+=2;
-      if(p.y>canvas.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-}
-
-// LANCER MUSIQUE YOUTUBE
-function playMusic(){
-  const musicLink="https://www.youtube.com/embed/XoAKZj5JZUY&list=RDXoAKZj5JZUY&start_radio=1?autoplay=1";
-  window.open(musicLink,"_blank");
+  `;
 }
 
 </script>
-</body>
-</html>TON_LIEN_YOUTUBE?autoplay=1";
-  window.open(musicLink,"_blank");
-}
 
-</script>
-</body>
-</html>
-
-</script>
 </body>
 </html>
