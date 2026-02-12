@@ -10,8 +10,6 @@ body{
   text-align:center;
   background:white;
   overflow-x:hidden;
-  background-size:cover;
-  background-position:center;
 }
 
 /* FAUX GOOGLE */
@@ -46,17 +44,21 @@ button{
   transition:0.3s;
 }
 button:hover{transform:scale(1.1);}
-#noBtn{pointer-events:none;} /* impossible à cliquer */
+#noBtn{pointer-events:none;} /* NON impossible à cliquer */
 
 /* QUIZ */
 #quiz{
   display:none;
   margin-top:50px;
   padding:30px;
-  background:rgba(255,255,255,0.8);
+  background-image:url('https://images.unsplash.com/photo-1601758173920-1dc676db3c87?auto=format&fit=crop&w=1470&q=80'); /* Mont Blanc + sapins */
+  background-size:cover;
+  background-position:center;
   border-radius:15px;
   display:inline-block;
   max-width:90%;
+  color:white;
+  text-shadow:2px 2px 5px black;
 }
 
 /* FINAL CINEMA */
@@ -90,8 +92,9 @@ button:hover{transform:scale(1.1);}
 
 #capitalMessage{
   font-size:40px;
-  color:#FF0000;
+  color:red;
   margin:20px;
+  text-shadow:2px 2px 5px black;
 }
 </style>
 </head>
@@ -121,7 +124,7 @@ button:hover{transform:scale(1.1);}
 <script>
 let step = 0;
 
-// QUESTIONS CORRIGEES ET AJOUT JO
+// QUESTIONS
 const questions = [
   {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
   {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:0, alwaysShowCorrect:true},
@@ -132,11 +135,7 @@ const questions = [
   {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
 ];
 
-// IMAGE DE FOND
-const background = "https://images.unsplash.com/photo-1544117510-eca3c0b215f3?auto=format&fit=crop&w=1470&q=80"; // montagne enneigée
-
 function startQuiz(){
-  document.body.style.backgroundImage = `url(${background})`;
   document.getElementById("googlePage").style.display="none";
   document.getElementById("quiz").style.display="block";
   showQuestion();
@@ -157,14 +156,14 @@ function showQuestion(){
   document.getElementById("quiz").innerHTML = html;
 }
 
-// VERIFICATION REPONSES
+// CHECK ANSWERS
 function checkAnswer(i){
   const q = questions[step];
 
-  // Toujours afficher bonne réponse pour certaines questions
+  // QUESTIONS SPECIALES
   if(q.alwaysShowCorrect){
-    if(q.text.includes("Ferrari")) alert("C’est vrai que Ferrari est la meilleure !");
-    if(q.text.includes("pickles")) alert("C’est vrai, un pickles est un produit dans du vinaigre !");
+    if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
+    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre !");
     if(q.text.includes("Savoie")){
       if(i===q.correct){
         document.getElementById("capitalMessage").innerHTML = "Bien sûr ! Flumet est la capitale 🏔️";
@@ -174,14 +173,12 @@ function checkAnswer(i){
     }
   }
 
-  // JO drapeau
   if(q.bothCorrect){
     if(i===0) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg')";
     if(i===1) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg')";
     alert("Bonne réponse ! 🎌");
   }
 
-  // Si mauvaise réponse classique
   if(!q.alwaysShowCorrect && !q.bothCorrect && !q.final && i!==q.correct){
     alert("Mauvaise réponse 😏"); return;
   }
@@ -202,7 +199,7 @@ function showFinal(){
   const subText = "C'est notre premier Saint Valentin, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
   typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
 
-  // YES grandit en slow motion
+  // YES effet slow motion
   const yesBtn = document.querySelector("button:contains('YES')");
   if(yesBtn){
     yesBtn.style.transition="all 2s ease";
@@ -213,7 +210,7 @@ function showFinal(){
   window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
 }
 
-// TEXTE LETTRE PAR LETTRE
+// TYPE TEXTE
 function typeText(id,text,speed,callback){
   const el=document.getElementById(id);
   el.innerHTML="";
