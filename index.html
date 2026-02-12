@@ -2,259 +2,156 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Mission Valentine - Hollywood</title>
+<title>Valentine Quiz Test</title>
 <style>
-body{
+body {
   margin:0;
-  font-family:Arial, sans-serif;
+  font-family: Arial, sans-serif;
   text-align:center;
   overflow-x:hidden;
-  background:white;
 }
 
-/* FAUX GOOGLE */
-#googlePage{
-  margin-top:120px;
-}
-.logo{
-  font-size:70px;
-  font-weight:bold;
-}
-.logo span:nth-child(1){color:#4285F4;}
-.logo span:nth-child(2){color:#DB4437;}
-.logo span:nth-child(3){color:#F4B400;}
-.logo span:nth-child(4){color:#4285F4;}
-.logo span:nth-child(5){color:#0F9D58;}
-.logo span:nth-child(6){color:#DB4437;}
-
-input{
-  width:60%;
-  padding:15px;
-  font-size:18px;
-  margin-top:30px;
+#quiz {
+  display:none;
+  margin:50px auto;
+  padding:30px;
+  max-width:600px;
+  background-image: url('https://images.unsplash.com/photo-1601758173920-1dc676db3c87?auto=format&fit=crop&w=1470&q=80');
+  background-size:cover;
+  color:white;
+  text-shadow: 1px 1px 4px black;
+  border-radius:15px;
+  position:relative;
 }
 
-button{
-  padding:12px 25px;
-  font-size:18px;
-  border:none;
-  border-radius:25px;
-  cursor:pointer;
+button {
   margin:10px;
-  transition:0.3s;
+  padding:12px 20px;
+  font-size:16px;
+  cursor:pointer;
+  border:none;
+  border-radius:20px;
 }
-button:hover{transform:scale(1.1);}
-#noBtn{pointer-events:none; position:absolute;} /* NON impossible à cliquer */
 
-/* QUIZ */
-#quiz{
+#noBtn {
+  pointer-events:none;
+  position:absolute;
+}
+
+#capitalMessage {
+  font-size:28px;
+  color:red;
+  margin:15px 0;
+  text-shadow:1px 1px 3px black;
+}
+
+#finalScreen {
   display:none;
   margin-top:50px;
-  padding:30px;
-  background-image:url('https://images.unsplash.com/photo-1601758173920-1dc676db3c87?auto=format&fit=crop&w=1470&q=80'); /* Mont Blanc + sapins */
-  background-size:cover;
-  background-position:center;
-  border-radius:15px;
-  display:inline-block;
-  max-width:90%;
-  color:white;
-  text-shadow:2px 2px 5px black;
-  position:relative;
 }
 
-/* FINAL CINEMA */
-#finalScreen{
-  display:none;
-  position:relative;
-  width:100%;
-  height:100vh;
-  background:black;
-  color:white;
-  text-align:center;
-  overflow:hidden;
+#finalText {
+  font-size:30px;
 }
 
-#confetti{
-  position:absolute;
-  top:0;
-  left:0;
-  pointer-events:none;
-}
-
-#finalText{
-  font-size:40px;
-  margin-top:120px;
-}
-
-#subText{
-  font-size:25px;
+#finalYes {
+  font-size:20px;
+  padding:12px 25px;
   margin-top:20px;
-}
-
-#capitalMessage{
-  font-size:35px;
-  color:red;
-  margin:20px;
-  text-shadow:2px 2px 5px black;
 }
 </style>
 </head>
 <body>
 
-<!-- FAUX GOOGLE -->
-<div id="googlePage">
-  <div class="logo">
-    <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
-  </div>
-  <input type="text" placeholder="Search Google or type a URL">
-  <br>
-  <button onclick="startQuiz()">Google Search</button>
-</div>
-
-<!-- QUIZ -->
 <div id="quiz"></div>
 <div id="capitalMessage"></div>
-
-<!-- FINAL CINEMA -->
 <div id="finalScreen">
-  <canvas id="confetti"></canvas>
-  <button id="finalYes" style="font-size:30px; padding:15px 30px; margin-top:50px;">YES 💖</button>
-  <h1 id="finalText"></h1>
-  <p id="subText"></p>
+  <div id="finalText"></div>
+  <button id="finalYes">YES 💖</button>
 </div>
 
 <script>
-let step = 0;
-
-// QUESTIONS
-const questions = [
+let step=0;
+const questions=[
   {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
   {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:0, alwaysShowCorrect:true},
-  {text:"Que voit Julien dans les nuages ?", options:["Scorpion 🦂","Crocodile 🐊"], correct:0},
   {text:"Quelle est la meilleure des voitures ?", options:["Le Carosse","Ferrari"], correct:1, alwaysShowCorrect:true},
   {text:"Qu'est ce qu'un pickles ?", options:["Un produit dans du vinaigre","Un produit dans de l'huile"], correct:0, alwaysShowCorrect:true},
-  {text:"Sous quel drapeau Louise va participer aux Jeux Olympiques ?", options:["France","Suisse"], correct:0, bothCorrect:true},
   {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
 ];
 
 function startQuiz(){
-  document.getElementById("googlePage").style.display="none";
   document.getElementById("quiz").style.display="block";
   showQuestion();
 }
 
 function showQuestion(){
-  if(step >= questions.length){ showFinal(); return; }
-  const q = questions[step];
-  document.getElementById("capitalMessage").innerHTML = "";
-  let html = "<h2>"+q.text+"</h2>";
+  if(step>=questions.length){ showFinal(); return; }
+  const q=questions[step];
+  let html="<h2>"+q.text+"</h2>";
   q.options.forEach((opt,i)=>{
     if(q.final && i===1){
-      html += `<button id="noBtn">${opt}</button>`;
+      html+=`<button id="noBtn">${opt}</button>`;
+      moveNoButton(document.getElementById("noBtn"));
     } else {
-      html += `<button onclick="checkAnswer(${i})">${opt}</button>`;
+      html+=`<button onclick="checkAnswer(${i})">${opt}</button>`;
     }
   });
-  document.getElementById("quiz").innerHTML = html;
-
-  // BOUGE NON
-  const noBtn = document.getElementById("noBtn");
-  if(noBtn){ moveNoButton(noBtn); }
+  document.getElementById("quiz").innerHTML=html;
+  document.getElementById("capitalMessage").innerHTML="";
 }
 
-// CHECK ANSWERS
 function checkAnswer(i){
-  const q = questions[step];
-
+  const q=questions[step];
   if(q.alwaysShowCorrect){
-    if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
-    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre ! 🥒");
-    if(q.text.includes("Savoie")){
+    if(q.text.includes("Flumet")){
       if(i===q.correct){
-        document.getElementById("capitalMessage").innerHTML = "Bien sûr ! Flumet est la capitale 🏔️";
+        document.getElementById("capitalMessage").innerText="Bien sûr ! Flumet est la capitale 🏔️";
       } else { alert("Non 😏 La bonne réponse est Flumet !"); }
     }
+    if(q.text.includes("Ferrari") && i!==q.correct) alert("C’est vrai que Ferrari est la meilleure ! 🏎️");
+    if(q.text.includes("pickles") && i!==q.correct) alert("C’est vrai, un pickles est un produit dans du vinaigre ! 🥒");
   }
-
-  if(q.bothCorrect){
-    if(i===0) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg')";
-    if(i===1) document.body.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Switzerland.svg')";
-    alert("Bonne réponse ! 🎌");
-  }
-
-  if(!q.alwaysShowCorrect && !q.bothCorrect && !q.final && i!==q.correct){ alert("Mauvaise réponse 😏"); return; }
-
   step++;
   showQuestion();
 }
 
-// FINAL CINEMA
+// FINAL
 function showFinal(){
   document.getElementById("quiz").style.display="none";
   document.getElementById("finalScreen").style.display="block";
-
-  startConfetti();
-
-  // TEXTE FINAL
-  const finalText = "Trop hâte de passer ce weekend ensemble 💖";
-  const subText = "C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
-  typeText("finalText", finalText, 50, ()=>{ typeText("subText", subText, 40); });
-
-  // YES final
-  const yesBtn = document.getElementById("finalYes");
-  yesBtn.onclick = ()=>{ window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank"); };
-  yesBtn.style.transition="all 1.5s ease";
-  setTimeout(()=>{ yesBtn.style.transform="scale(1.5)"; },200);
+  typeText("finalText","C'est notre premier Saint Valentin ensemble, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️",50);
+  document.getElementById("finalYes").onclick=function(){
+    window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
+  };
 }
 
-// TYPE TEXTE
-function typeText(id,text,speed,callback){
+function typeText(id,text,speed){
   const el=document.getElementById(id);
-  el.innerHTML="";
   let i=0;
-  const timer = setInterval(()=>{
-    el.innerHTML += text.charAt(i);
+  el.innerHTML="";
+  const timer=setInterval(()=>{
+    el.innerHTML+=text.charAt(i);
     i++;
-    if(i>=text.length){ clearInterval(timer); if(callback) callback(); }
-  }, speed);
-}
-
-// CONFETTIS
-function startConfetti(){
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  let pieces=[];
-  for(let i=0;i<200;i++){
-    pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*150});
-  }
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    pieces.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
-      ctx.fill();
-      p.y+=2;
-      if(p.y>canvas.height)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
+    if(i>=text.length) clearInterval(timer);
+  },speed);
 }
 
 // BOUGE NON
 function moveNoButton(btn){
   setInterval(()=>{
-    const quiz = document.getElementById("quiz");
-    const maxX = quiz.offsetWidth - btn.offsetWidth;
-    const maxY = quiz.offsetHeight - btn.offsetHeight;
-    const x = Math.random()*maxX;
-    const y = Math.random()*maxY;
-    btn.style.left = x+"px";
-    btn.style.top = y+"px";
+    const quiz=document.getElementById("quiz");
+    const maxX=quiz.offsetWidth-btn.offsetWidth;
+    const maxY=quiz.offsetHeight-btn.offsetHeight;
+    const x=Math.random()*maxX;
+    const y=Math.random()*maxY;
+    btn.style.left=x+"px";
+    btn.style.top=y+"px";
   },800);
 }
+
+// DÉMARRE AUTOMATIQUE pour test
+startQuiz();
 </script>
 </body>
 </html>
