@@ -2,25 +2,24 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Mission Valentine</title>
-
+<title>Mission Valentine - Hollywood</title>
 <style>
 body{
   margin:0;
   font-family:Arial, sans-serif;
   text-align:center;
   background:white;
+  overflow-x:hidden;
 }
 
+/* FAUX GOOGLE */
 #googlePage{
   margin-top:120px;
 }
-
 .logo{
   font-size:70px;
   font-weight:bold;
 }
-
 .logo span:nth-child(1){color:#4285F4;}
 .logo span:nth-child(2){color:#DB4437;}
 .logo span:nth-child(3){color:#F4B400;}
@@ -41,54 +40,83 @@ button{
   border:none;
   border-radius:25px;
   cursor:pointer;
-  margin-top:20px;
-  background:#4285F4;
-  color:white;
+  margin:10px;
+  transition:0.3s;
 }
-button:hover{
-  transform:scale(1.1);
-}
+button:hover{transform:scale(1.1);}
+
 #quiz{
   display:none;
   margin-top:100px;
 }
+
+/* Animation bouton NON */
+#noBtn{
+  position:relative;
+}
+
+/* FINAL CINEMA */
+#finalScreen{
+  display:none;
+  position:relative;
+  width:100%;
+  height:100vh;
+  background:black;
+  color:white;
+  text-align:center;
+  overflow:hidden;
+}
+
+#confetti{
+  position:absolute;
+  top:0;
+  left:0;
+  pointer-events:none;
+}
+
+#finalText{
+  font-size:50px;
+  margin-top:200px;
+}
+
+#subText{
+  font-size:25px;
+  margin-top:20px;
+}
 </style>
 </head>
-
 <body>
 
+<!-- FAUX GOOGLE -->
 <div id="googlePage">
   <div class="logo">
     <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
   </div>
-
   <input type="text" placeholder="Search Google or type a URL">
   <br>
   <button onclick="startQuiz()">Google Search</button>
 </div>
 
+<!-- QUIZ -->
 <div id="quiz"></div>
 
-<script>
+<!-- FINAL CINEMA -->
+<div id="finalScreen">
+  <canvas id="confetti"></canvas>
+  <h1 id="finalText"></h1>
+  <p id="subText"></p>
+</div>
 
+<script>
 let step = 0;
 
 const questions = [
-  {
-    text: "Quel est notre jeu préféré ?",
-    options: ["Mario Kart", "Uno", "Monopoly", "🌵 Cactus"],
-    correct: 3
-  },
-  {
-    text: "Probabilité que je t'adore ?",
-    options: ["12%", "47%", "99%", "∞"],
-    correct: 3
-  },
-  {
-    text: "Veux-tu être ma Valentine ? 💘",
-    options: ["YES 💖", "NO 😏"],
-    correct: 0
-  }
+  {text:"Quel est notre jeu préféré ?", options:["Mario Kart","Uno","Monopoly","🌵 Cactus"], correct:3},
+  {text:"Quelle est la capitale de Savoie ?", options:["Flumet","Albertville"], correct:1},
+  {text:"Que voit Julien dans les nuages ?", options:["Scorpion 🦂","Crocodile 🐊"], correct:0},
+  {text:"Quelle est la meilleure des voitures ?", options:["Le Carosse","Ferrari"], correct:1, alwaysShowCorrect:true},
+  {text:"Qu'est ce qu'un pickles ?", options:["Un produit dans du vinaigre","Un produit dans de l'huile"], correct:0, alwaysShowCorrect:true},
+  {text:"Veux-tu être ma Valentine ? 💘", options:["YES 💖","NO 😏"], correct:0, final:true}
 ];
 
 function startQuiz(){
@@ -98,40 +126,99 @@ function startQuiz(){
 }
 
 function showQuestion(){
-  if(step >= questions.length){
-    showFinal();
-    return;
-  }
-
+  if(step >= questions.length){ showFinal(); return; }
   const q = questions[step];
   let html = "<h2>"+q.text+"</h2>";
-
-  q.options.forEach((opt, i)=>{
-    html += `<button onclick="checkAnswer(${i})">${opt}</button><br><br>`;
+  q.options.forEach((opt,i)=>{
+    if(q.final && i===1){
+      html += `<button id="noBtn" onclick="moveNoButton()">${opt}</button>`;
+    } else {
+      html += `<button onclick="checkAnswer(${i})">${opt}</button>`;
+    }
   });
-
   document.getElementById("quiz").innerHTML = html;
 }
 
+// BOUTON NON qui bouge
+function moveNoButton(){
+  const btn = document.getElementById("noBtn");
+  btn.style.position="absolute";
+  btn.style.left = Math.random()*70+"%";
+  btn.style.top = Math.random()*70+"%";
+}
+
+// Vérification réponses
 function checkAnswer(i){
-  if(i === questions[step].correct){
-    step++;
-    showQuestion();
-  } else {
-    alert("Mauvaise réponse 😏");
+  const q = questions[step];
+  if(q.alwaysShowCorrect){
+    if(q.text.includes("Ferrari")) alert("C’est vrai que Ferrari est la meilleure !");
+    if(q.text.includes("pickles")) alert("C’est vrai, un pickles est un produit dans du vinaigre !");
+  } else if(i!==q.correct && !q.final){
+    alert("Mauvaise réponse 😏"); return;
   }
+  step++; showQuestion();
 }
 
+// AFFICHAGE FINAL
 function showFinal(){
-  document.body.innerHTML = `
-  <div style="background:black;color:white;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
-    <h1 style="font-size:50px;">💖 ELLE A DIT OUI 💖</h1>
-    <p style="font-size:25px;">Mission Valentine accomplie.</p>
-  </div>
-  `;
+  document.getElementById("quiz").style.display="none";
+  const final = document.getElementById("finalScreen");
+  final.style.display="block";
+
+  // CONFETTIS
+  startConfetti();
+
+  // TEXTE FINAL LETTRE PAR LETTRE
+  const finalText = "Trop hâte de passer ce weekend ensemble 💖";
+  const subText = "C'est notre premier Saint Valentin, j'espère que de nombreux suivront. Ton Ju qui t'aime ❤️";
+  typeText("finalText", finalText, 50, () => { typeText("subText", subText, 40); });
+
+  // YES grandit en slow-motion
+  const yesBtn = document.querySelector("button:contains('YES')");
+  if(yesBtn){
+    yesBtn.style.transition="all 2s ease";
+    yesBtn.style.transform="scale(3)";
+  }
+
+  // MUSIQUE YOUTUBE
+  window.open("https://www.youtube.com/embed/TON_LIEN_YOUTUBE?autoplay=1","_blank");
 }
 
-</script>
+// TEXTE LETTRE PAR LETTRE
+function typeText(id,text,speed,callback){
+  const el = document.getElementById(id);
+  el.innerHTML="";
+  let i=0;
+  const timer = setInterval(()=>{
+    el.innerHTML += text.charAt(i);
+    i++;
+    if(i>=text.length){ clearInterval(timer); if(callback) callback(); }
+  }, speed);
+}
 
+// CONFETTIS
+function startConfetti(){
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  let pieces=[];
+  for(let i=0;i<200;i++){
+    pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*150});
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white";
+    pieces.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2,true);
+      ctx.fill();
+      p.y+=2;
+      if(p.y>canvas.height)p.y=0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
 </body>
 </html>
