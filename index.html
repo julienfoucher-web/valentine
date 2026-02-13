@@ -19,7 +19,7 @@ body {
 
 button { margin:10px; padding:12px 20px; font-size:16px; cursor:pointer; border:none; border-radius:20px; }
 
-#noBtn { pointer-events:none; position:absolute; }
+#noBtn { pointer-events:none; position:fixed; z-index:999; }
 
 .message { font-size:28px; color:red; margin:15px 0; text-shadow:1px 1px 3px black; }
 
@@ -29,7 +29,7 @@ button { margin:10px; padding:12px 20px; font-size:16px; cursor:pointer; border:
 
 #finalYes { font-size:20px; padding:12px 25px; margin-top:20px; }
 
-.flag { width:100px; margin:20px auto; } </style>
+.flag { width:220px; height:auto; margin:20px auto; display:block; } </style>
 
 </head>
 <body><div id="quiz"></div>
@@ -91,7 +91,10 @@ function showFinal(){
   const yesBtn=document.getElementById("finalYes");
   yesBtn.style.transition="all 2s ease";
   yesBtn.onclick=function(){
-    window.open("https://www.youtube.com/embed/XoAKZj5JZUY?autoplay=1","_blank");
+    const videoContainer = document.createElement('div');
+      videoContainer.style.marginTop = "30px";
+      videoContainer.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/XoAKZj5JZUY" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      document.body.appendChild(videoContainer);
   };
 
   // Animation YES
@@ -134,14 +137,14 @@ function typeText(id,text,speed){
 
 function moveNoButton(btn){
   setInterval(()=>{
-    const quiz=document.getElementById("quiz");
-    const maxX=quiz.offsetWidth-btn.offsetWidth;
-    const maxY=quiz.offsetHeight-btn.offsetHeight;
-    const x=Math.random()*maxX;
-    const y=Math.random()*maxY;
-    btn.style.left=x+"px";
-    btn.style.top=y+"px";
+    const maxX = window.innerWidth - btn.offsetWidth;
+    const maxY = window.innerHeight - btn.offsetHeight;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
   },800);
+},800);
 }
 
 startQuiz();
